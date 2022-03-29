@@ -9,25 +9,15 @@ const rfStyle = {
   backgroundColor: '#fff',
 };
 
-const initialNodes = [
-  { id: 'node-1', type: 'textUpdater', position: { x: 0, y: 0 }, data: { value: 123 } },
-  {
-    id: 'node-2',
-    type: 'output',
-    targetPosition: 'top',
-    position: { x: 0, y: 200 },
-    data: { label: 'node 2' },
-  },
-  {
-    id: 'node-3',
-    type: 'output',
-    targetPosition: 'top',
-    position: { x: 200, y: 200 },
-    data: { label: 'node 3' },
-  },
-];
+// 随机布置卡片位置
+const randomPosition = () => {
+  return ({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight
+  });
+};
 
-const elements: {
+const initialNodes: {
   id: string,
   type: string,
   data: {
@@ -141,7 +131,10 @@ const elements: {
           },
         ],
       },
-      position: { x: 220, y: 50 },
+      position: {
+        ...randomPosition()
+      },
+      // position: { x: 220, y: 50 },
       targetPosition: 'top',
       sourcePosition: 'bottom'
     },
@@ -152,7 +145,10 @@ const elements: {
         title: 'Role',
         list: [],
       },
-      position: { x: 250, y: 100 },
+      position: {
+        ...randomPosition()
+      },
+      // position: { x: 250, y: 100 },
       targetPosition: 'top',
       sourcePosition: 'bottom'
     },
@@ -163,7 +159,10 @@ const elements: {
         title: 'acounnt',
         list: [],
       },
-      position: { x: 190, y: 100 },
+      position: {
+        ...randomPosition()
+      },
+      // position: { x: 190, y: 100 },
       targetPosition: 'top',
       sourcePosition: 'bottom'
     },
@@ -190,7 +189,7 @@ const initialEdges: {
   animated?: boolean
 }[] = [
     { id: 'node-1-2', source: 'node-1', target: 'node-2', sourceHandle: 'a', animated: true },
-    { id: 'node-1-3', source: 'node-1', target: 'node-3', sourceHandle: 'b', animated: true },
+    { id: 'node-1-3', source: 'node-1', target: 'node-3', sourceHandle: 'a', animated: true },
   ];
 
 // we define the nodeTypes outside of the component to prevent re-renderings
@@ -198,12 +197,11 @@ const initialEdges: {
 const nodeTypes = { textUpdater: TextUpdaterNode };
 
 function Flow() {
-  // const [nodes, setNodes] = useState(initialNodes);
-  const [nodes, setNodes] = useState<any[]>(elements);
+  const [nodes, setNodes] = useState<any[]>(initialNodes);
   const [edges, setEdges] = useState<any[]>(initialEdges);
 
   const onNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+    (changes) => {setNodes((nds) => applyNodeChanges(changes, nds)), console.log(changes, 'changes')},
     [setNodes]
   );
   const onEdgesChange = useCallback(
@@ -219,14 +217,14 @@ function Flow() {
     <ReactFlowProvider>
       <div style={{ height: '100vh' }}>
         <ReactFlow
-          nodes={nodes as any}
+          nodes={nodes}
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
           zoomOnScroll={false} // 使用滚轮需禁用父元素缩放
-          preventScrolling={false} // 使超出内容使用滚轮
+          preventScrolling={false} // 使超出内容使用滚轮"与上面属性结合使用否则不生效"
           fitView
           style={rfStyle}
         />

@@ -1,9 +1,21 @@
-import { useCallback } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { Handle, Position } from 'react-flow-renderer';
 import { createFromIconfontCN } from '@ant-design/icons';
 import './styles.less'
 
-const handleStyle = { left: 10 };
+interface NodeList {
+  keyName: string
+  type: string
+  size: number
+}
+
+interface Props {
+  selected: boolean
+  data: {
+    list: [],
+    title: string
+  }
+}
 
 const nodeBaseStyle = {
   background: "#0FA9CC",
@@ -13,10 +25,14 @@ const nodeBaseStyle = {
 
 const nodeLeftTopStyle = {
   ...nodeBaseStyle,
-  // top: 60,
 };
 
-function TextUpdaterNode({ data }) {
+const cstyle = '1px solid red';
+
+function TextUpdaterNode(props: Props) {
+  console.log(props, 'props')
+  const { selected } = props || {};
+  const { list, title } = props?.data || {};
 
   // 设置图标
   const iconNode = (iconName: string, color: string) => {
@@ -25,27 +41,31 @@ function TextUpdaterNode({ data }) {
     });
     return <IconFont type={iconName} style={{ color: `${color}` }} />;
   };
+
   // 判断变量是否为数组
   const isArray = (obj) => {
     return obj instanceof Array;
   };
 
-  const { list, title } = data || {};
-
-  console.log(isArray(list), 'isArray')
+  // 判断点击的哪个节点
+  const onChange = useCallback((evt) => {
+    let arr = evt.target.className.split(/\s+/); // 以空格为分割线切成数组
+  }, []);
 
   return (
-    <div className={`nodeCard`}>
+    <div className={`nodeCard`}
+      style={{ border: selected ? cstyle : '1px solid #4ba7c8' }}
+      onClick={(evt) => { onChange(evt) }}>
       <div className="nodeCard_title">
         <span className="nodeCard_title__inner">{title}</span>
         <div className="nodeCard_title_options" onClick={() => { console.log(8888888) }}>{iconNode('icon-shezhi', '#fff')}</div>
       </div>
       <div className="nodeCard_content_list">
         {
-          isArray(list) && list.map((item: { keyName: string, type: string, size: number }, i) => (
+          isArray(list) && list.map((item: NodeList, i: number) => (
             <div className="nodeCard_content_list__item" key={i}>
               <span className="nodeCard_content_list_label">{item?.keyName}</span>
-              <span className="nodeCard_content_list_type">{item?.type}{`(${item.size})`}</span>
+              <span className="nodeCard_content_list_type">{item?.type}{`(${item?.size})`}</span>
             </div>
           ))
         }
