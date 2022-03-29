@@ -199,8 +199,8 @@ const nodeTypes = { textUpdater: TextUpdaterNode };
 
 function Flow() {
   // const [nodes, setNodes] = useState(initialNodes);
-  const [nodes, setNodes] = useState(elements);
-  const [edges, setEdges] = useState(initialEdges);
+  const [nodes, setNodes] = useState<any[]>(elements);
+  const [edges, setEdges] = useState<any[]>(initialEdges);
 
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),

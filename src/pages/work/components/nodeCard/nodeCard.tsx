@@ -25,8 +25,14 @@ function TextUpdaterNode({ data }) {
     });
     return <IconFont type={iconName} style={{ color: `${color}` }} />;
   };
+  // 判断变量是否为数组
+  const isArray = (obj) => {
+    return obj instanceof Array;
+  };
 
-  const { list, title } = data || {}
+  const { list, title } = data || {};
+
+  console.log(isArray(list), 'isArray')
 
   return (
     <div className={`nodeCard`}>
@@ -36,7 +42,7 @@ function TextUpdaterNode({ data }) {
       </div>
       <div className="nodeCard_content_list">
         {
-          list.length > 0 && list.map((item: { keyName: string, type: string, size: number }, i) => (
+          isArray(list) && list.map((item: { keyName: string, type: string, size: number }, i) => (
             <div className="nodeCard_content_list__item" key={i}>
               <span className="nodeCard_content_list_label">{item?.keyName}</span>
               <span className="nodeCard_content_list_type">{item?.type}{`(${item.size})`}</span>
@@ -50,15 +56,6 @@ function TextUpdaterNode({ data }) {
       <Handle type="target" position={Position.Left} style={nodeLeftTopStyle} />
       <Handle type="source" position={Position.Right} style={nodeLeftTopStyle} id="a" />
     </div>
-    // <div className="text-updater-node">
-    //   <Handle type="target" position={Position.Top} />
-    //   <div>
-    //     <label htmlFor="text">Text:</label>
-    //     <input id="text" name="text" onChange={onChange} />
-    //   </div>
-    //   <Handle type="source" position={Position.Bottom} id="a" style={handleStyle} />
-    //   <Handle type="source" position={Position.Bottom} id="b" />
-    // </div>
   );
 }
 
